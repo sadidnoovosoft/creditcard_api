@@ -18,4 +18,12 @@ class CreditCardService(private val dataSource: CreditCardDataSource) {
     fun addCard(creditCard: CreditCard): CreditCard {
         return dataSource.createCard(creditCard)
     }
+
+    fun updateCard(creditCard: CreditCard): CreditCard {
+        return dataSource.updateCard(creditCard)
+    }
+
+    fun deleteCard(cardNumber: String) {
+        dataSource.deleteCard(cardNumber)
+    }
 }

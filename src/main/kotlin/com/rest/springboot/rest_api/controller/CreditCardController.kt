@@ -5,10 +5,12 @@ import com.rest.springboot.rest_api.model.Response
 import com.rest.springboot.rest_api.service.CreditCardService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -21,7 +23,10 @@ class CreditCardController(private val service: CreditCardService) {
 
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(e: NoSuchElementException): ResponseEntity<Response> {
-        return ResponseEntity(Response("Invalid card number"), HttpStatus.NOT_FOUND)
+        return ResponseEntity(
+            Response(e.message ?: "Invalid card number"),
+            HttpStatus.NOT_FOUND
+        )
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
@@ -46,5 +51,16 @@ class CreditCardController(private val service: CreditCardService) {
     @ResponseStatus(HttpStatus.CREATED)
     fun postCard(@RequestBody creditCard: CreditCard): CreditCard {
         return service.addCard(creditCard)
+    }
+
+    @PutMapping
+    fun updateCard(@RequestBody creditCard: CreditCard): CreditCard {
+        return service.updateCard(creditCard)
+    }
+
+    @DeleteMapping("/{cardNumber}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteCard(@PathVariable cardNumber: String) {
+        service.deleteCard(cardNumber)
     }
 }

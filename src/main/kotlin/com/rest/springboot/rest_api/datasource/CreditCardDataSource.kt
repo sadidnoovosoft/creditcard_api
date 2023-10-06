@@ -17,7 +17,10 @@ class CreditCardDataSource {
     }
 
     fun retrieveCard(cardNumber: String): CreditCard {
-        return creditCards.first { it.cardNumber == cardNumber }
+        return creditCards.find { it.cardNumber == cardNumber }
+            ?: throw NoSuchElementException(
+                "Could not find credit card with card number: $cardNumber"
+            )
     }
 
     fun createCard(creditCard: CreditCard): CreditCard {
@@ -28,5 +31,24 @@ class CreditCardDataSource {
         }
         creditCards.add(creditCard)
         return creditCard
+    }
+
+    fun updateCard(creditCard: CreditCard): CreditCard {
+        val index = creditCards.indexOfFirst { it.cardNumber == creditCard.cardNumber }
+        if (index == -1) {
+            throw NoSuchElementException(
+                "Could not find credit card with card number: ${creditCard.cardNumber}"
+            )
+        }
+        creditCards[index] = creditCard
+        return creditCards[index]
+    }
+
+    fun deleteCard(cardNumber: String) {
+        val creditCard = creditCards.find { it.cardNumber == cardNumber }
+            ?: throw NoSuchElementException(
+                "Could not find credit card with card number: $cardNumber"
+            )
+        creditCards.remove(creditCard)
     }
 }
